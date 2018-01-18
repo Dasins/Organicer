@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 /**
  * Clase que define objetos que actuan como organizadores de tareas.
@@ -101,7 +102,7 @@ public class Organizador {
     }
     
     /**
-     * 
+     * Imprime por terminal las estadisticas de tareas, el total de tareas, las completas e imcopletas y sus porcentajes.
      */
     public void mostrarEstadisticas() {
         int tareasTotales = tareas.size();
@@ -120,7 +121,7 @@ public class Organizador {
     /**
      * Imprime todos los datos de la tarea con mayor prioridad. Si hay varias, imprime la última encontrada. 
      */
-    public void mostrarMasUrgente() {
+    public void mostrarMasPrioritaria() {
         if (validarIndice(0)){
             Tarea prioritaria = tareas.get(0);
             for(Tarea tarea : tareas){ 
@@ -135,7 +136,7 @@ public class Organizador {
     /**
      * Imprime todos los datos de la tarea con menor prioridad. Si hay varias, imprime la última encontrada. 
      */
-    public void mostrarMenosUrgente() {
+    public void mostrarMenosPrioritaria() {
         if (validarIndice(0)){
             Tarea prioritaria = tareas.get(0);
             for(Tarea tarea : tareas){ 
@@ -165,6 +166,36 @@ public class Organizador {
                 }
                 else if(prioridadActual == prioridadMax) {
                     tareasAImprimir.add(tarea);
+                }
+            }
+            imprimirColeccion(tareasAImprimir);
+        }
+    }
+    
+    /**
+     * Imprimir todos los datos de las tareas menos urgente (fecha de vencimiento menos urgente).
+     */
+    public void mostrarMenosUrgente() {
+        if (validarIndice(0)){
+            ArrayList<Tarea> tareasAImprimir = new ArrayList<>();
+            Tarea menosUrgente = null;
+            LocalDate fechaMax = null;
+            LocalDate now = LocalDate.now();
+            for(Tarea tarea : tareas){
+                LocalDate fechaActual = tarea.getFechaLimite();
+                if(fechaActual != null && (fechaActual.isEqual(now) || fechaActual.isAfter(now))) {
+                    if(fechaMax == null) {
+                        fechaMax = fechaActual; 
+                    }
+                    if(fechaActual.isAfter(fechaMax)){
+                        tareasAImprimir = new ArrayList<>();
+                        menosUrgente = tarea;
+                        tareasAImprimir.add(tarea);
+                        fechaMax = tarea.getFechaLimite();
+                    }
+                    else if(fechaActual.isEqual(fechaMax)) {
+                        tareasAImprimir.add(tarea);
+                    }
                 }
             }
             imprimirColeccion(tareasAImprimir);
